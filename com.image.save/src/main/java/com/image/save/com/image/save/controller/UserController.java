@@ -24,10 +24,7 @@ public class UserController {
     UserService userService;
 
     @PostMapping()
-    public ResponseEntity<StandResponse> saveUser(
-            @RequestParam String id,
-            @RequestParam String name,
-            @RequestParam String address,
+    public ResponseEntity<StandResponse> saveUser(@RequestParam String id, @RequestParam String name, @RequestParam String address,
             //   @RequestParam MultipartFile file
             //  @RequestPart byte[] fontimage
             @RequestParam ArrayList<MultipartFile> fontImage
@@ -39,9 +36,6 @@ public class UserController {
         System.out.println(id);
         System.out.println(name);
         System.out.println(address);
-      // System.out.println(file.getOriginalFilename());
-       //System.out.println(file.getOriginalFilename());
-   //     System.out.println(fontImage);
 
 //   userService.saveUser(new UserDto(id,name,address,file.getBytes()));
   //  userService.saveUser(new UserDto(id,name,address,fontImage));
@@ -61,21 +55,22 @@ public class UserController {
         ), HttpStatus.CREATED);
     }
 
-/*@GetMapping(path = "{id}")
-        public ResponseEntity<StandResponse> findImg(@PathVariable String id){
+@GetMapping(path = "{id}")
+        public ResponseEntity<StandResponse> findImg(@PathVariable String id) throws IOException {
     UserDto image = userService.findImage(id);
     return new ResponseEntity<>(new StandResponse(
             200,"ok",image
     ),HttpStatus.CREATED);
 }
 
+
 @GetMapping()
-    public ResponseEntity<StandResponse> getAll() {
+    public ResponseEntity<StandResponse> getAll() throws IOException {
         List<UserDto> all = userService.findAll();
 
         return new ResponseEntity<>(
                 new StandResponse(200, "ok", all), HttpStatus.CREATED
         );
-    }*/
+    }
 
 }

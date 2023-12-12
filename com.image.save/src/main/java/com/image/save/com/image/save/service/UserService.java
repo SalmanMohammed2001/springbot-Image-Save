@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface UserService {
     public void saveUser(UserDto dto) throws IOException;
-  /*  public List<UserDto> findAll();
+   public List<UserDto> findAll() throws IOException;
 
-    public UserDto findImage(String id);*/
+    public UserDto findImage(String id) throws IOException;
 }

@@ -21,5 +21,7 @@ public class UserDto {
     private String name;
     private String address;
   //  private byte[] imag;
-    private ArrayList<byte[]> image;
+    private ArrayList<byte[]> images;
+
+
 }

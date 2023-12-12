@@ -20,5 +20,5 @@ public class User {
     private String address;
  //   @Lob
     //private byte[] image;
-    private String image;
+    private String images;
 }
