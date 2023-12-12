@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ajax Implementation</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <style>
+    .image-g{
+        width: 150px;
+        height: 150px;
+        border: 1px solid black;
+        border-radius: 100%;
+    }
+
+    .img-g{
+        width: 180px!important;
+        height: 200px !important;
+        border: 1px solid red;
+
+        /*margin-left: 10px;*/
+    }
+
+    .img-g>img{
+        width: 150px;
+        height: 150px;
+        border: 1px solid black;
+        border-radius: 100%;
+
+    }
+
+
+    </style>
+</head>
+<body>
+<section class="container-fluid p-4  bg-success">
+    <h1>Hello Ajax </h1>
+    <h1>Json Convert</h1>
+</section>
+
+<section class="container mt-2">
+
+
+
+    <div class="row mt-4">
+        <form id="customerForm" class="col-6">
+            <div class="mb-3">
+                <label for="txtId" class="form-label">Password</label>
+                <input type="text" class="form-control" id="txtId" placeholder="Id" name="id">
+            </div>
+            <div class="mb-3">
+                <label for="txtName" class="form-label">Password</label>
+                <input type="text" class="form-control" id="txtName" placeholder="name" name="name">
+            </div>
+            <div class="mb-3">
+                <label for="txtAddress" class="form-label">Address</label>
+                <input type="text" class="form-control" id="txtAddress" placeholder="address" name="address">
+            </div>
+            <div class="mb-3">
+                    <div class="img-g">
+                        <img src="" alt="" id="frontShow"> <br>
+                </div>
+
+                <label for="txtFile" class="form-label">Image</label>
+                <input type="file" class="form-control" id="txtFile" placeholder="image" name="file"
+                       accept="png, .jpg, .jpeg">
+            </div>
+
+            <div class="mb-3">
+                <button type="button" id="btnGetAllCustomer" class="btn btn-danger btn-sm">Get All Customer</button>
+                <button type="button" class="btn btn-primary " id="btnSave">Save Customer</button>
+                <button type="button" class="btn btn-success " id="btnDelete">Delete Customer</button>
+                <button type="button" class="btn btn-warning " id="btnUpdate">Update Customer</button>
+
+            </div>
+        </form>
+
+
+        <!--file type :JSON-->
+
+
+        <div class="col-6">
+            <div class="student_img">
+                <img src="">
+                <table class="table table-bordered table-hover">
+                    <thead class="bg-danger">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Salary</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tblCustomerJson">
+
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+    </div>
+
+
+
+</section>
+
+
+
+
+
+<script src="assets/jquery-3.6.4.min.js"></script>
+<script>
+
+
+
+
+    // var baseUrl="http://localhost:8080/_14_Model_Mapper_war/ai/customer"
+    var baseUrl = "http://localhost:8002/api/users"
+
+    //searchCustomer
+    $('#txtId').on("keypress", function (e) {
+        if (e.key == "Enter") {
+            searchCustomer();
+        }
+
+
+    })
+
+
+    loadAllCustomer();
+
+    function loadAllCustomer() {
+        loadAllCustomers()
+    }
+
+    function callMethod() {
+        $('#tblCustomerJson>tr').click(function () {
+
+            let id = $(this).children().eq(0).text()
+            let name = $(this).children().eq(1).text()
+            let address = $(this).children().eq(2).text()
+            let salary = $(this).children().eq(3).text()
+             let image =$(this).children().find('img').attr('src')
+
+            console.log(image)
+
+            $('#txtId').val(id)
+            $('#txtName').val(name)
+            $('#txtAddress').val(address)
+            $('#txtSalary').val(salary)
+             // $('#frontShow').attr('src', `data:image/jpg;base64,${image}`);
+             $('#frontShow').attr('src',image);
+
+
+        })
+
+    }
+
+    $('#btnGetAllCustomer').click(function () {
+       // loadAllCustomer()
+    })
+
+
+    $('#btnSave').click(function () {
+        saveCustomer()
+
+    })
+
+    // query String customer?txtID=001&txtName=salman
+    $('#btnDelete').click(function () {
+     //   deleteCustomer();
+
+    })
+
+
+    $('#btnUpdate').click(function () {
+        // alert("sslman")
+        // let data = $('#customerForm').serialize();
+        /* let id= $('#txtId').val()
+         let name= $('#txtName').val()
+         let address= $('#txtAddress').val()
+          let salary= $('#txtSalary').val()*/
+       updateCustomer()
+    })
+
+
+    function searchCustomer() {
+        let searchId = $('#txtId').val();
+
+        $.ajax({
+            url: baseUrl + "/" + searchId,
+            method: "GET",
+            success: function (resp) {
+                console.log(resp.data)
+
+                if (resp.code == 200) {
+                    $('#txtId').val(resp.data.id)
+                    $('#txtName').val(resp.data.name)
+                    $('#txtAddress').val(resp.data.address)
+                    $('#frontShow').attr('src', `data:image/jpg;base64,${resp.data.imag}`);console.log('salman')
+
+                }
+            }
+        })
+
+    }
+
+    function loadAllCustomers() {
+        $('#tblCustomerJson').empty()
+        $.ajax({
+            url: baseUrl,
+            method: "GET",
+            async: true,
+            dataType: "JSON", // please convert type json
+            success: function (resp) {
+                console.log(resp.data)
+
+                for (const e of resp.data) {
+                    /*   console.log(e.id)
+                       console.log(e.name)
+                       console.log(e.address)*/
+
+                    console.log(e.image)
+                    let r1 = `<tr>
+                       <td>${e.id}</td>
+                       <td>${e.name}</td>
+                       <td>${e.address}</td>
+                       <td>
+                       <img style="width: 100px;height: 100px;border: 1px solid red" id="imageId"
+                                  src="data:image/jpeg;base64,${e.imag}" alt="">
+</td>
+
+                       </tr>`
+
+                    $('#tblCustomerJson').append(r1)
+
+
+
+                }
+                callMethod()
+            }
+
+        });
+
+
+    }
+
+    function saveCustomer() {
+        /*    let data = $('#customerForm').serialize(); // return query String
+           console.log(data)*/
+        /*let id=$('#txtId').val
+        let name=$('#txtName').val
+        let address=$('#txtAddress').val
+        let file=$('#txtFile').val
+        console.log(id,name,address,file)*/
+        const fileInput = document.querySelector('#txtFile');
+        const formData = new FormData();
+        formData.append('id', $('#txtId').val());
+        formData.append('name', $('#txtName').val());
+        formData.append('address', $('#txtAddress').val());
+      //  formData.append('file', fileInput.files[0]);
+        formData.append('fontimage', fileInput.files[0]);
+        console.log(formData)
+
+        var requestOptions = {
+            method: 'POST',
+            // /!*headers: myHeaders,*!/
+            body: formData,
+        };
+        fetch("http://localhost:8002/api/users", requestOptions)
+            .then(response => response.text())
+            .then(result => {
+                console.log(result);
+               loadAllCustomers()
+            })
+            .catch(error => console.log('error', error));
+
+        /*
+                $.ajax({
+                    url: 'http://localhost:8002/api/users',
+                    method: "POST",
+               //     data: formData,  //application /x-ww-from-urlencoded
+                    success: function (resp) {
+                        console.log(resp)
+                          if(resp.code===200){
+                           alert("Successfully Customer Register ")
+                           loadAllCustomer()
+                              clearCustomer()
+                       }else if(resp.code===500){
+                           alert(resp.message)
+                       }
+
+                    }, error: function (ob, textStatus, err) {
+                        console.log(ob)
+                        console.log(textStatus)
+                        console.log(err)
+                    }
+                })*/
+    }
+
+    function updateCustomer() {
+
+        let cuOb = {
+            id: $('#txtId').val(),
+            name: $('#txtName').val(),
+            address: $('#txtAddress').val(),
+            salary: $('#txtFile').val()
+        }
+
+
+        $.ajax({
+            url: baseUrl,
+            method: "PUT",
+            contentType: "application/json", // request  content type json
+            data: JSON.stringify(cuOb), // formet js object to valid json string
+            success: function (resp) {
+                console.log(resp)
+                if (resp.code == 200) {
+                    alert("Success Fully Update")
+                    loadAllCustomer()
+                    clearCustomer()
+                }
+                /*else if(resp.code=400) {
+                    alert(resp.message)
+                }else {
+                    alert(resp.data)
+                }*/
+
+            }, error: function (ob, errStatus) {
+                console.log(ob)
+
+            }
+
+        })
+    }
+
+    function deleteCustomer() {
+        let data = $('#txtId').val()
+
+        $.ajax({
+
+            //    url:"http://localhost:8080/_14_Model_Mapper_war/ai/customer?id="+ data,
+            url: baseUrl + "?id=" + data,
+            method: "DELETE",
+            //   data: data,
+            success: function (resp) {
+                console.log(resp)
+                if (resp.code == 200) {
+                    alert("Success Fully Delete")
+                    loadAllCustomer()
+                    clearCustomer()
+                }/*else if(resp.status==400) {
+                       alert(resp.data)
+                   }else {
+                       alert(resp.data)
+                   }*/
+
+
+            }, error: function (ob, textStatus, err) {
+                console.log(textStatus)
+                console.log(ob)
+                console.log(err)
+            }
+        })
+    }
+
+
+
+
+    function clearCustomer() {
+        $('#txtId').val("")
+        $('#txtName').val("")
+        $('#txtAddress').val("")
+        $('#txtSalary').val("")
+        $('#txtId').focus()
+
+    }
+
+
+</script>
+</body>
+</html>
