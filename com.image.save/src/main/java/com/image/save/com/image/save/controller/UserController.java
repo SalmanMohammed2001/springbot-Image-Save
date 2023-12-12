@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -27,8 +28,9 @@ public class UserController {
             @RequestParam String id,
             @RequestParam String name,
             @RequestParam String address,
-         //   @RequestParam MultipartFile file
-           @RequestPart byte[] fontimage
+            //   @RequestParam MultipartFile file
+            //  @RequestPart byte[] fontimage
+            @RequestParam ArrayList<MultipartFile> fontImage
     ) throws IOException {
 //        userService.saveUser(dto,file);
 
@@ -39,16 +41,27 @@ public class UserController {
         System.out.println(address);
       // System.out.println(file.getOriginalFilename());
        //System.out.println(file.getOriginalFilename());
-   //     System.out.println(fontimage);
+   //     System.out.println(fontImage);
 
 //   userService.saveUser(new UserDto(id,name,address,file.getBytes()));
-    userService.saveUser(new UserDto(id,name,address,fontimage));
+  //  userService.saveUser(new UserDto(id,name,address,fontImage));
+
+        ArrayList<byte[]> bytes = new ArrayList<>();
+        fontImage.forEach(file->{
+            try {
+                bytes.add(file.getBytes());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+          userService.saveUser(new UserDto(id,name,address,bytes));
         return new ResponseEntity<>(new StandResponse(
                 2000,"Saved",null
         ), HttpStatus.CREATED);
     }
 
-@GetMapping(path = "{id}")
+/*@GetMapping(path = "{id}")
         public ResponseEntity<StandResponse> findImg(@PathVariable String id){
     UserDto image = userService.findImage(id);
     return new ResponseEntity<>(new StandResponse(
@@ -63,6 +76,6 @@ public class UserController {
         return new ResponseEntity<>(
                 new StandResponse(200, "ok", all), HttpStatus.CREATED
         );
-    }
+    }*/
 
 }

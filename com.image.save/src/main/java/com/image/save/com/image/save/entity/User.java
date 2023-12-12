@@ -18,6 +18,7 @@ public class User {
     private String id;
     private String name;
     private String address;
-    @Lob
-    private byte[] image;
+ //   @Lob
+    //private byte[] image;
+    private String image;
 }
